@@ -1,0 +1,361 @@
+public class MyClass {
+    public static void main(String args[]) {
+        int[][]  m1 = {{0, 2, 1, 0, 0}, 
+                       {0, 0, 0, 3, 4}, 
+                       {0, 0, 0, 0, 0}, 
+                       {0, 0, 0, 0, 0}, 
+                       {0, 0, 0, 0, 0}};
+            //OUTPUT:        [7, 6, 8, 21]
+            
+      int[][]   m2 = {{0, 1, 0, 0, 0, 1}, 
+                      {4, 0, 0, 3, 2, 0}, 
+                      {0, 0, 0, 0, 0, 0}, 
+                      {0, 0, 0, 0, 0, 0}, 
+                      {0, 0, 0, 0, 0, 0}, 
+                      {0, 0, 0, 0, 0, 0}};
+            //OUTPUT:       [0, 3, 2, 9, 14]
+            
+            solution(m2);
+            
+    }
+    
+    public static int[] solution(int[][] m) {
+        
+        int baseState = 0;
+        
+        int[] answer;
+        
+        int[] stateSums = stateSums(m);
+        int[] answerStates = terminalStates(stateSums);
+        
+        answer = new int[answerStates.length + 1];
+        
+        for(int i = 0; i < answerStates.length; i++) {
+            
+            findProb(m, answer, baseState, answerStates[i]);
+            
+        }
+        
+        return answer;
+        
+    }
+    
+    public static int[] stateSums(int[][] m) {
+        
+        int[] sums = new int[m.length];
+        
+        for(int i = 0; i < m.length; i++) {
+            
+            int total = 0;
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                total += m[i][j];
+                
+            }
+            
+            sums[i] = total;
+            
+        }
+        
+        return sums;
+        
+    }
+    
+    public static int[] terminalStates(int[] s) {
+        
+        int count = 0;
+        
+        for(int i = 0; i < s.length; i++) {
+            
+            if(s[i] == 0) {
+                
+                count++;
+                
+            }
+            
+        }
+        
+        int[] terminals = new int[count];
+        count = 0;
+        
+        for(int i = 0; i < s.length; i++) {
+            
+            if(s[i] == 0) {
+                
+                terminals[count] = i;
+                count++;
+                
+            }
+            
+        }
+        
+        return terminals;
+        
+    }
+    
+    public static int[] reachableStates(int[][] m) {
+        
+        int[] helper = new int[m.length];
+        
+        for(int i = 0; i < m.length; i++) {
+            
+            int total = 0;
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                total += m[j][i];
+                
+            }
+            
+            helper[i] = total;
+            
+        }
+        
+        int zeroes = 0;
+        
+        for(int i = 0; i < helper.length; i++) {
+            
+            if(helper[i] == 0) {
+                
+                zeroes++;
+                
+            }
+            
+        }
+        
+        int[] inaccessible = new int[zeroes];
+        zeroes = 0;
+        
+        for(int i = 0; i < helper.length; i++) {
+            
+            if(helper[i] == 0) {
+                
+                inaccessible[zeroes] = i;
+                zeroes++;
+                
+            }
+            
+        }
+        
+        return inaccessible;
+        
+    }
+    
+    public static int[] statesFromCurrState(int[][] m, int currState) {
+        
+        int[] nextStates;
+        int helper = 0;
+        
+        for(int i = currState; i < currState+1; i++) {
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                if(m[i][j] > 0) {
+                    
+                    helper++;
+                    
+                }
+                
+            }
+            
+        }
+        
+        nextStates = new int[helper];
+        helper = 0;
+        
+        for(int i = currState; i < currState+1; i++) {
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                if(m[i][j] > 0) {
+                    
+                    nextStates[helper] = j;
+                    helper++;
+                    
+                }
+                
+            }
+            
+        }
+        
+        return nextStates;
+        
+    }
+    
+    public static int[] numerators(int[][] m, int currState) {
+        
+        int[] numerators;
+        int helper = 0;
+        
+        for(int i = currState; i < currState+1; i++) {
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                if(m[i][j] > 0) {
+                    
+                    helper++;
+                    
+                }
+                
+            }
+            
+        }
+        
+        numerators = new int[helper];
+        helper = 0;
+        
+        for(int i = currState; i < currState+1; i++) {
+            
+            for(int j = 0; j < m.length; j++) {
+                
+                if(m[i][j] > 0) {
+                    
+                    numerators[helper] = m[i][j];
+                    helper++;
+                    
+                }
+                
+            }
+            
+        }
+        
+        return numerators;
+        
+    }
+    
+    public static int[] findProb(int[][] m, int[] answer, int baseState, int goalState) {
+        
+        int[] stateSums = stateSums(m);
+        int[] nonAccessible = reachableStates(m);
+        int[] answerStates = terminalStates(stateSums);
+        int[] possibleStates = statesFromCurrState(m, baseState);
+   
+        int denom = stateSums[baseState];
+        
+        for(int i = 0; i < nonAccessible.length; i++) {
+            
+            if(nonAccessible[i] == goalState) {
+                
+                for(int j = 0; j < answerStates.length; j++) {
+                    
+                    if(answerStates[j] == goalState) {
+                        
+                        answer[j] = 0;
+                        return answer;
+                        
+                    } 
+                    
+                }
+                
+            }
+            
+        }
+        
+        findProbHelper(m, baseState, goalState);
+   
+        return answer;
+        
+    }
+    
+    public static int[] findProbHelper(int[][] m, int state, int goalState) {
+        
+        int[] stateSums = stateSums(m);
+        int[] denominators = stateSums(m);
+        int[] numerators = numerators(m, state);
+        int[] possibleStates = statesFromCurrState(m, state);
+        int[] answerStates = terminalStates(stateSums);
+        
+        int denominator = denominators[state];
+
+        int[] answer = new int[numerators.length+1];
+        
+        int[] helper = new int[numerators.length+1];
+        
+        for(int i = 0; i < answerStates.length; i++) {
+            
+            if(answerStates[i] == state) {
+                
+                answer[0] = 1;
+                return answer;
+                
+            }
+            
+        }
+        
+        //Need to start building our answer array of numerators.
+        //For s0 our goal is to get 1 * 4 + 1 * 1 with a denominator of 18
+        //This is from 1/2 * s1 + 1/2 * s2
+        //findProbHelper for s1 should return [4, 0, 0, 9]
+        //with that result I want to multiply s0[1] * s1[4, 0, 0]
+        //To start I want s0 to get another array from s1 that is [4, 0, 0]
+        //To narrow this down if a state terminates we can default its numerator to 0 when its not the goalState
+        
+        
+        //if a possible state is not the goal state and is terminal we change the numerator to 0
+        for(int i = 0; i < possibleStates.length; i++) {
+            
+            for(int j = 0; j < answerStates.length; j++) {
+                
+                if(answerStates[j] == possibleStates[i] && goalState != possibleStates[i]) {
+                    
+                    numerators[i] = 0;
+                    
+                }
+                
+            }
+            
+        }
+        
+        //This builds our default answer array
+        for(int i = 0; i < answer.length; i++) {
+            
+            if(i < answer.length-1) {
+                
+                answer[i] = numerators[i];
+                
+            } else if (i == answer.length-1) {
+                
+                answer[i] = denominator;
+                
+            }
+            
+        }
+        
+        for(int i = 0; i < possibleStates.length; i++) {
+            
+            System.out.print(possibleStates[i]);
+            
+        }
+        System.out.println("");
+        
+        //Now that we have removed terminal states from our array we need to account for the goal state in the array.
+
+        //Now if numerators[i] > 0 we can call findProbHelper on possibleStates[i]
+        //For any state greater than the current state this should prevent infinite loops by calling the same state repeatedly
+        //Because we dont need to find the probablity inside of a state we've already been to we only need to return the probablity of reaching that state from the current state.
+        
+        for(int i = 0; i < numerators.length; i++) {
+            
+            if(numerators[i] > 0 && possibleStates[i] > state) {
+                
+                helper = findProbHelper(m, possibleStates[i], goalState);
+                
+                //Right now helper is returning an array that contains the numerator/denominator probabilities of reaching any state beyond the current state that is not a terminal state.
+                //Those are associated with possibleStates[i] if i is 1 then you return a collection of possible states from the array [4, 0, 0, 3, 2, 0]
+                //if the state is terminal and not the goal then the probablity of reaching that state defaults to 0/denominator
+                //example: goal 3 then we will return the array [4, 3, 0, 9]
+                //in this example because state 4 is terminal it defaults to 0
+                
+                //So based on what possible state we are looking at we should be able to do our multiplication with the array returned by helper against the state in the answer array
+                
+                
+            }
+            
+        }
+        
+        return answer;
+        
+    }
+    
+}

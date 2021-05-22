@@ -1,0 +1,50 @@
+public static String solution(String x, String y) {
+        
+        int m = 1;
+        int f = 1;
+        
+        int Mac = Integer.parseInt(x);
+        int Fac = Integer.parseInt(y);
+        
+        int[] answer = {-1};
+        int total = 0;
+        String generations = "";
+        
+        if((m == Mac) && (f == Fac)) {
+            return "0";
+        } else {
+            generations = Integer.toString(depthSearch(m, f, Mac, Fac, total, answer));
+            if(generations.equals("-1")) {
+                generations = "impossible";
+            }
+        }
+        
+        return generations;
+    }
+    
+    public static int depthSearch(int m, int f, int Mac, int Fac, int total, int[] answer) {
+        //System.out.println("Start: " + m + " " + f);
+        
+        if((m == Mac) && (f == Fac)) {
+            //System.out.println("Result: " + m + " " + f);
+            //System.out.println("Total: " + total);
+            answer[0] = total;
+            return answer[0];
+        }
+        
+        if(m + f <= Mac || m + f <= Fac) {
+            //System.out.println("Step: " + m + " " + f);
+            total++;
+            if(m+f <= Mac){
+                depthSearch(m+f, f, Mac, Fac, total, answer);
+            }
+            if(f+m <= Fac){
+                depthSearch(m, f+m, Mac, Fac, total, answer);
+            }
+                
+        }
+
+        
+            
+        return answer[0];
+    }

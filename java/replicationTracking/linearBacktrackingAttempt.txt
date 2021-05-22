@@ -1,0 +1,46 @@
+public static String solution(String x, String y) {
+        
+        int m = 1;
+        int f = 1;
+        
+        int Mac = Integer.parseInt(x);
+        int Fac = Integer.parseInt(y);
+        
+        int[] answer = {-1};
+        int total = 0;
+        String generations = "";
+        
+        if((m == Mac) && (f == Fac)) {
+            return "0";
+        } else {
+            generations = Integer.toString(search(Mac, Fac, total, answer));
+            
+        }
+        
+        return generations;
+    }
+    
+    public static int search(int Mac, int Fac, int total, int[] answer) {
+        
+        //m = Mac;
+        //f = Fac;
+        
+        if((Mac == 1) && (Fac == 1)) {
+            //System.out.println("Answer: " + Mac + " " + Fac + " " + total);
+            answer[0] = total;
+            return answer[0];
+        } else if((Mac <= 0) || (Fac <= 0)){
+            return answer[0];
+        } else if (Mac == Fac) {
+            return answer[0];
+        } else if (Mac >= Fac) {
+            total++;
+            search(Mac-Fac, Fac, total, answer);
+        } else if (Fac >= Mac) {
+            total++;
+            search(Mac, Fac-Mac, total, answer);
+        }
+        
+        //System.out.println("Meme: " + Mac + " " + Fac);
+        return answer[0];
+    }

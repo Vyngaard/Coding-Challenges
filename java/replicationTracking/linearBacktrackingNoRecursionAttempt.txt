@@ -1,0 +1,94 @@
+import java.math.BigInteger;
+
+public static String solution(String x, String y) {
+        
+        BigInteger Mac = new BigInteger(x);
+        BigInteger Fac = new BigInteger(y);
+        
+        BigInteger total = new BigInteger("0");
+        String generations = "";
+        
+        if((Mac.equals(BigInteger.ONE)) && (Fac.equals(BigInteger.ONE))) {
+            
+            return "0";
+            
+        } else {
+            
+            int mh = 1;
+            int fh = 1;
+            
+            BigInteger helper = new BigInteger("2");
+            
+            mh = Mac.compareTo(BigInteger.ONE);
+            fh = Fac.compareTo(BigInteger.ONE);
+            
+            while((mh >= 0) && (fh >= 0)) {
+                
+                BigInteger fMod = new BigInteger("0");
+                BigInteger mMod = new BigInteger("0");
+                
+                mMod = Mac.mod(helper);
+                fMod = Fac.mod(helper);
+ 
+                if((Mac.equals(BigInteger.ONE)) && (Fac.equals(BigInteger.ONE))) {
+                    generations = total.toString();
+                    return generations;
+                }
+                
+                if((Mac.equals(BigInteger.ONE)) || (Fac.equals(BigInteger.ONE))) {
+                    
+                    if(Mac.equals(BigInteger.ONE)) {
+                        total = total.add(Fac.subtract(BigInteger.ONE));
+                        generations = total.toString();
+                        return generations;
+                    } else if (Fac.equals(BigInteger.ONE)) {
+                        total = total.add(Mac.subtract(BigInteger.ONE));
+                        generations = total.toString();
+                        return generations;
+                    }
+                }
+                
+                if((mMod.equals(BigInteger.ZERO)) && (fMod.equals(BigInteger.ZERO))){
+                    generations = "impossible";
+                    return generations;
+                }
+            
+                if(Mac.equals(Fac)){
+                    generations = "impossible";
+                    return generations;
+                }
+                
+                mh = Mac.compareTo(Fac);
+                fh = Fac.compareTo(Mac);
+            
+                if(mh == 1) {
+                    helper = Mac.divide(Fac);
+                    total = total.add(helper);
+                    helper = helper.multiply(Fac);
+                    Mac = Mac.subtract(helper);
+                    if(Mac.equals(BigInteger.ZERO)) {
+                        generations = "impossible";
+                        return generations;
+                    }
+                    
+                } else if (fh == 1) {
+                    helper = Fac.divide(Mac);
+                    total = total.add(helper);
+                    helper = helper.multiply(Mac);
+                    Fac = Fac.subtract(helper);
+                    if(Fac.equals(BigInteger.ZERO)) {
+                        generations = "impossible";
+                        return generations;
+                    }
+                }
+                
+                fh = Fac.compareTo(BigInteger.ONE);
+                mh = Mac.compareTo(BigInteger.ONE);
+                
+            }
+            
+        }
+        return generations;
+    }
+    
+}

@@ -1,0 +1,20 @@
+//Need an array of sums of each state for denominators.
+    //Need access to each state array. m[i][j] this is the i not the j
+    //Need to know which states are accessible in each state. m[i][j] all j values greater than 0 are accessible states
+    //use the value at j in state i over that states denominator as the probablity to move to the state at i 
+    //the total of a state is the states denominator over itself
+    //terminating states are represented as a 0 for any state other than themselves
+    
+    //the initial state is always 0
+    
+    //we should first check which states are terminating by checking if their total sum is 0
+    
+    //then we check  if a state is accessible, if not return 0. we do this by checking the total value of all m[i][j] for the sum of all i values at a given j if 0 the state is inaccessible
+        //if the state is not inaccessible then we know we can calculate its probablity
+    
+    //then i need to build the function to find probablity for s0 -> s(n)
+        //this takes the form of the probablity of each state from 0 multiplied by the probablity we return from each state
+        //d0/d0 = s0/d0*s0 + s1/d0*s1 + ... for every state in s0 with a probablity greater than 0; this might be simplified by using a secondary array that contains the values of the states we can go to. ie for s0 we have s1 and s5
+            //maybe a for loop that for each value i in the secondary array grabs s at i from the primary array this is multiplied by the result of this function called on s at i which should return its own array of states we can go to????? i.e. for s1 it returns [0, 3, 4]
+            //this combined with the array of state sums can be used to get the value at each state in the array at i and for any new states we can also call the same recursive function if a state is terminal and not the goal state it returns zero. i.e. s3 s4 so instead of calling
+            //the helper function of these states we can simply return 0
